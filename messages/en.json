@@ -1,0 +1,142 @@
+{
+  "Metadata": {
+    "title": "Sebastián Arias — Full Stack Software Engineer",
+    "description": "Full stack developer working with React, Next.js, TypeScript and NestJS. Portfolio, projects and web development services.",
+    "servicesTitle": "Custom web development — Sebastián Arias",
+    "servicesDescription": "Landing pages, corporate websites, online stores and custom systems for your business."
+  },
+  "Nav": {
+    "work": "Work",
+    "experience": "Experience",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact",
+    "portfolio": "Portfolio",
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "packages": "Packages",
+    "quote": "Estimator",
+    "faq": "FAQ"
+  },
+  "Theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Locale": {
+    "switch": "Change language",
+    "es": "Español",
+    "en": "English"
+  },
+  "Common": {
+    "available": "Available for new projects",
+    "unavailable": "Fully booked for now",
+    "localTime": "Local time in Armenia",
+    "downloadCv": "Download CV",
+    "contactMe": "Let's talk",
+    "viewProject": "View case",
+    "visitSite": "Visit site",
+    "backHome": "Back home",
+    "scroll": "Scroll",
+    "from": "From",
+    "perMonth": "/mo",
+    "quoteOnly": "Custom quote"
+  },
+  "Hero": {
+    "eyebrow": "Full Stack Software Engineer",
+    "years": "{count}+ years in production"
+  },
+  "Stats": {
+    "title": "Real software, used by real people"
+  },
+  "Work": {
+    "eyebrow": "Selected work",
+    "title": "Things I've built",
+    "role": "Role",
+    "stack": "Stack"
+  },
+  "Experience": {
+    "eyebrow": "Experience",
+    "title": "Where I've worked",
+    "present": "Present",
+    "products": "Products"
+  },
+  "Stack": {
+    "eyebrow": "Stack",
+    "title": "Tools I build with"
+  },
+  "About": {
+    "eyebrow": "About",
+    "title": "More than code"
+  },
+  "Contact": {
+    "eyebrow": "Contact",
+    "title": "Shall we build something together?",
+    "subtitle": "Open to remote roles and new projects.",
+    "email": "Email me",
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Hi Sebastián, I saw your portfolio and I'd like to talk."
+  },
+  "Footer": {
+    "rights": "All rights reserved.",
+    "built": "Designed and built by me with Next.js, GSAP and Lenis."
+  },
+  "Services": {
+    "eyebrow": "Services",
+    "title": "Websites that grow your business",
+    "subtitle": "Custom design and development: fast, beautiful and easy to manage. From idea to launch.",
+    "cta": "Get a quote",
+    "seeWork": "See work",
+    "packagesEyebrow": "Packages",
+    "packagesTitle": "Clear pricing from day one",
+    "packagesNote": "Reference prices. The final price depends on scope and is confirmed after we talk.",
+    "popular": "Most requested",
+    "examples": "Examples",
+    "monthlyTitle": "Monthly plan",
+    "monthlyDescription": "Your site always up to date, with nothing technical to worry about.",
+    "extrasTitle": "I also do",
+    "processEyebrow": "Process",
+    "processTitle": "How we work",
+    "faqEyebrow": "FAQ",
+    "faqTitle": "Common questions",
+    "ctaTitle": "Tell me about your idea",
+    "ctaSubtitle": "I reply within 24 hours.",
+    "ctaMessage": "Hi Sebastián, I'd like a quote for a website."
+  },
+  "Quote": {
+    "eyebrow": "Estimator",
+    "title": "Get an estimate in seconds",
+    "type": "What do you need?",
+    "addons": "Add-ons",
+    "estimate": "Estimate",
+    "disclaimer": "Approximate range. Final price confirmed on WhatsApp.",
+    "send": "Send on WhatsApp",
+    "messageIntro": "Hi Sebastián, I used the estimator on your site:",
+    "messageType": "Type",
+    "messageAddons": "Add-ons",
+    "messageEstimate": "Estimate",
+    "none": "None"
+  },
+  "CaseStudy": {
+    "problem": "The challenge",
+    "solution": "The solution",
+    "highlights": "Highlights",
+    "result": "Outcome",
+    "role": "Role",
+    "year": "Year",
+    "client": "Client",
+    "stack": "Stack",
+    "next": "Next project",
+    "videoSoon": "Project video coming soon"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "This page doesn't exist or has moved."
+  },
+  "Testimonials": {
+    "eyebrow": "Clients",
+    "title": "What clients say",
+    "placeholder": "Draft · dev only"
+  }
+}

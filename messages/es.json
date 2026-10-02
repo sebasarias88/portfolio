@@ -1,0 +1,142 @@
+{
+  "Metadata": {
+    "title": "Sebastián Arias — Full Stack Software Engineer",
+    "description": "Desarrollador full stack en React, Next.js, TypeScript y NestJS. Portafolio, proyectos y servicios de desarrollo web.",
+    "servicesTitle": "Desarrollo web a medida — Sebastián Arias",
+    "servicesDescription": "Landing pages, webs corporativas, tiendas y sistemas a medida para tu negocio."
+  },
+  "Nav": {
+    "work": "Proyectos",
+    "experience": "Experiencia",
+    "about": "Sobre mí",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "portfolio": "Portafolio",
+    "skip": "Saltar al contenido",
+    "menu": "Menú",
+    "close": "Cerrar",
+    "packages": "Paquetes",
+    "quote": "Cotizador",
+    "faq": "Preguntas"
+  },
+  "Theme": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "Locale": {
+    "switch": "Cambiar idioma",
+    "es": "Español",
+    "en": "English"
+  },
+  "Common": {
+    "available": "Disponible para nuevos proyectos",
+    "unavailable": "Agenda llena por ahora",
+    "localTime": "Hora en Armenia",
+    "downloadCv": "Descargar CV",
+    "contactMe": "Hablemos",
+    "viewProject": "Ver caso",
+    "visitSite": "Visitar sitio",
+    "backHome": "Volver al inicio",
+    "scroll": "Scroll",
+    "from": "Desde",
+    "perMonth": "/mes",
+    "quoteOnly": "Por cotización"
+  },
+  "Hero": {
+    "eyebrow": "Full Stack Software Engineer",
+    "years": "+{count} años en producción"
+  },
+  "Stats": {
+    "title": "Software real, usado por personas reales"
+  },
+  "Work": {
+    "eyebrow": "Proyectos seleccionados",
+    "title": "Cosas que he construido",
+    "role": "Rol",
+    "stack": "Stack"
+  },
+  "Experience": {
+    "eyebrow": "Experiencia",
+    "title": "Dónde he trabajado",
+    "present": "Actualidad",
+    "products": "Productos"
+  },
+  "Stack": {
+    "eyebrow": "Stack",
+    "title": "Herramientas con las que construyo"
+  },
+  "About": {
+    "eyebrow": "Sobre mí",
+    "title": "Más que código"
+  },
+  "Contact": {
+    "eyebrow": "Contacto",
+    "title": "¿Construimos algo juntos?",
+    "subtitle": "Estoy abierto a posiciones remotas y a nuevos proyectos.",
+    "email": "Escríbeme",
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Hola Sebastián, vi tu portafolio y me gustaría hablar contigo."
+  },
+  "Footer": {
+    "rights": "Todos los derechos reservados.",
+    "built": "Diseñado y construido por mí con Next.js, GSAP y Lenis."
+  },
+  "Services": {
+    "eyebrow": "Servicios",
+    "title": "Páginas web que hacen crecer tu negocio",
+    "subtitle": "Diseño y desarrollo a medida: rápidas, bonitas y fáciles de administrar. De la idea al lanzamiento.",
+    "cta": "Cotiza tu proyecto",
+    "seeWork": "Ver proyectos",
+    "packagesEyebrow": "Paquetes",
+    "packagesTitle": "Precios claros desde el inicio",
+    "packagesNote": "Precios de referencia. El valor final depende del alcance y se confirma después de conversar.",
+    "popular": "Más pedido",
+    "examples": "Ejemplos",
+    "monthlyTitle": "Plan mensual",
+    "monthlyDescription": "Tu página siempre al día, sin preocuparte por nada técnico.",
+    "extrasTitle": "También hago",
+    "processEyebrow": "Proceso",
+    "processTitle": "Cómo trabajamos",
+    "faqEyebrow": "Preguntas frecuentes",
+    "faqTitle": "Lo que suelen preguntarme",
+    "ctaTitle": "Cuéntame tu idea",
+    "ctaSubtitle": "Respondo en menos de 24 horas.",
+    "ctaMessage": "Hola Sebastián, quiero cotizar una página web para mi negocio."
+  },
+  "Quote": {
+    "eyebrow": "Cotizador",
+    "title": "Calcula un estimado en segundos",
+    "type": "¿Qué necesitas?",
+    "addons": "Extras",
+    "estimate": "Estimado",
+    "disclaimer": "Rango aproximado. El precio final se confirma por WhatsApp.",
+    "send": "Enviar por WhatsApp",
+    "messageIntro": "Hola Sebastián, usé el cotizador de tu página:",
+    "messageType": "Tipo",
+    "messageAddons": "Extras",
+    "messageEstimate": "Estimado",
+    "none": "Ninguno"
+  },
+  "CaseStudy": {
+    "problem": "El reto",
+    "solution": "La solución",
+    "highlights": "Lo destacado",
+    "result": "Resultado",
+    "role": "Rol",
+    "year": "Año",
+    "client": "Cliente",
+    "stack": "Stack",
+    "next": "Siguiente proyecto",
+    "videoSoon": "Video del proyecto próximamente"
+  },
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "Esta página no existe o se movió."
+  },
+  "Testimonials": {
+    "eyebrow": "Clientes",
+    "title": "Lo que dicen quienes trabajaron conmigo",
+    "placeholder": "Borrador · solo en desarrollo"
+  }
+}
