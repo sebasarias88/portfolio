@@ -16,6 +16,8 @@ export const chatRequestSchema = z.object({
     .max(MAX_MESSAGES)
     .refine((m) => m.at(-1)?.role === "user", "Last message must be from the user")
     .refine((m) => m.filter((x) => x.role === "user").every((x) => x.content.length <= MAX_MESSAGE_CHARS), "Message too long"),
+  /** True once this conversation was already handed off to WhatsApp. */
+  handedOff: z.boolean().optional(),
   /** Honeypot */
   website: z.string().max(0).optional(),
 });

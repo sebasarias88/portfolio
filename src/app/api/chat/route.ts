@@ -23,6 +23,12 @@ const HANDOFF_TEXT = {
   en: "Perfect, I have what I need. Tap the button to continue with Sebastián on WhatsApp.",
 } as const;
 
+/** Used when the model says nothing after the visitor was already handed off. */
+const AFTER_HANDOFF_TEXT = {
+  es: "¡Con gusto! Sebastián te responderá pronto por WhatsApp; el botón de arriba sigue disponible.",
+  en: "You're welcome! Sebastián will reply soon on WhatsApp; the button above is still there.",
+} as const;
+
 /** Builds a hand-off from the visitor's own messages when the model gives us nothing usable. */
 function fallbackHandoff(messages: { role: "user" | "assistant"; content: string }[], locale: "es" | "en"): HandoffInput {
   const fromVisitor = messages
@@ -74,15 +80,23 @@ export async function POST(request: NextRequest) {
     async start(controller) {
       let streamedText = "";
       try {
+        const handedOff = body.handedOff === true;
         const { handoffInput } = await provider.stream({
-          system: buildSystemPrompt(),
+          system: buildSystemPrompt({ handedOff }),
           messages: body.messages,
           signal: request.signal,
+          allowHandoff: !handedOff,
           onText: (delta) => {
             streamedText += delta;
             controller.enqueue(line({ type: "text", value: delta }));
           },
         });
+
+        // Already handed off: just talk, never create a second lead or card
+        if (handedOff) {
+          if (!streamedText.trim()) controller.enqueue(line({ type: "text", value: AFTER_HANDOFF_TEXT[body.locale] }));
+          return;
+        }
 
         const wantsHandoff = handoffInput !== undefined;
         const parsed = handoffInputSchema.safeParse(handoffInput ?? {});

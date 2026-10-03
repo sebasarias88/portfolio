@@ -73,7 +73,7 @@ export function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ locale, messages: history }),
+        body: JSON.stringify({ locale, messages: history, handedOff: handoff !== null }),
         signal: controller.signal,
       });
 

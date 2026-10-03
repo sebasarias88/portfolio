@@ -11,6 +11,8 @@ interface StreamOptions {
   system: string;
   messages: ChatTurn[];
   signal: AbortSignal;
+  /** When false the hand-off tool is not offered (conversation already handed off). */
+  allowHandoff: boolean;
   onText: (delta: string) => void;
 }
 
@@ -34,20 +36,24 @@ function anthropicProvider(apiKey: string): ChatProvider {
 
   return {
     name: "anthropic",
-    async stream({ system, messages, signal, onText }) {
+    async stream({ system, messages, signal, allowHandoff, onText }) {
       const stream = client.messages.stream(
         {
           model,
           max_tokens: MAX_TOKENS,
           temperature: 0.4,
           system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-          tools: [
-            {
-              name: HANDOFF_TOOL_NAME,
-              description: HANDOFF_TOOL_DESCRIPTION,
-              input_schema: HANDOFF_TOOL_PARAMETERS as unknown as Anthropic.Tool.InputSchema,
-            },
-          ],
+          ...(allowHandoff
+            ? {
+                tools: [
+                  {
+                    name: HANDOFF_TOOL_NAME,
+                    description: HANDOFF_TOOL_DESCRIPTION,
+                    input_schema: HANDOFF_TOOL_PARAMETERS as unknown as Anthropic.Tool.InputSchema,
+                  },
+                ],
+              }
+            : {}),
           messages,
         },
         { signal },
@@ -72,7 +78,7 @@ function groqProvider(apiKey: string): ChatProvider {
 
   return {
     name: "groq",
-    async stream({ system, messages, signal, onText }) {
+    async stream({ system, messages, signal, allowHandoff, onText }) {
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         signal,
@@ -85,13 +91,17 @@ function groqProvider(apiKey: string): ChatProvider {
           // gpt-oss is a reasoning model: keep reasoning short and out of the output
           ...(model.startsWith("openai/gpt-oss") ? { reasoning_effort: "low", include_reasoning: false } : {}),
           messages: [{ role: "system", content: system }, ...messages],
-          tools: [
-            {
-              type: "function",
-              function: { name: HANDOFF_TOOL_NAME, description: HANDOFF_TOOL_DESCRIPTION, parameters: HANDOFF_TOOL_PARAMETERS },
-            },
-          ],
-          tool_choice: "auto",
+          ...(allowHandoff
+            ? {
+                tools: [
+                  {
+                    type: "function",
+                    function: { name: HANDOFF_TOOL_NAME, description: HANDOFF_TOOL_DESCRIPTION, parameters: HANDOFF_TOOL_PARAMETERS },
+                  },
+                ],
+                tool_choice: "auto",
+              }
+            : {}),
         }),
       });
 
@@ -131,7 +141,7 @@ function groqProvider(apiKey: string): ChatProvider {
         }
       }
 
-      if (toolName !== HANDOFF_TOOL_NAME) return {};
+      if (!allowHandoff || toolName !== HANDOFF_TOOL_NAME) return {};
       try {
         return { handoffInput: JSON.parse(toolArgs || "{}") };
       } catch {
