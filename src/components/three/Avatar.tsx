@@ -1,5 +1,6 @@
 "use client";
 
+import { RoundedBox } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -147,6 +148,17 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
       <mesh material={pants} position={[0.13, 0.3, -0.44]}>
         <capsuleGeometry args={[0.075, 0.38, 6, 12]} />
       </mesh>
+      {/* Sneakers: dark upper, white sole */}
+      {[-0.13, 0.13].map((x) => (
+        <group key={x} position={[x, 0, -0.48]}>
+          <RoundedBox args={[0.11, 0.075, 0.22]} radius={0.03} position={[0, 0.06, -0.03]}>
+            <meshStandardMaterial color="#3a3642" roughness={0.65} />
+          </RoundedBox>
+          <RoundedBox args={[0.115, 0.025, 0.23]} radius={0.01} position={[0, 0.0125, -0.03]}>
+            <meshStandardMaterial color="#ece9f5" roughness={0.6} />
+          </RoundedBox>
+        </group>
+      ))}
 
       <group ref={torso} position={[0, 0.98, 0.02]}>
         {/* Broad, athletic torso in a black tee */}

@@ -99,10 +99,37 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
             <meshStandardMaterial color="#b3202a" roughness={0.5} />
           </mesh>
         ))}
-        <mesh position={[0, 0.24, 0]}>
-          <cylinderGeometry args={[0.03, 0.03, 0.42, 12]} />
-          <meshStandardMaterial color={theme.metal} metalness={0.6} roughness={0.3} />
+        {/* Gas lift */}
+        <mesh position={[0, 0.27, 0]}>
+          <cylinderGeometry args={[0.028, 0.028, 0.36, 16]} />
+          <meshStandardMaterial color={theme.metal} metalness={0.7} roughness={0.25} />
         </mesh>
+        <mesh position={[0, 0.12, 0]}>
+          <cylinderGeometry args={[0.045, 0.05, 0.08, 16]} />
+          <meshStandardMaterial color="#0f0e12" roughness={0.5} />
+        </mesh>
+        {/* Five-star base with casters */}
+        {[0, 1, 2, 3, 4].map((i) => {
+          const angle = (i / 5) * Math.PI * 2;
+          const cx = Math.sin(angle);
+          const cz = Math.cos(angle);
+          return (
+            <group key={i}>
+              <mesh position={[cx * 0.14, 0.085, cz * 0.14]} rotation={[0, angle, 0]}>
+                <boxGeometry args={[0.045, 0.03, 0.28]} />
+                <meshStandardMaterial color="#0f0e12" roughness={0.5} />
+              </mesh>
+              <mesh position={[cx * 0.27, 0.06, cz * 0.27]}>
+                <cylinderGeometry args={[0.012, 0.012, 0.04, 8]} />
+                <meshStandardMaterial color={theme.metal} metalness={0.6} roughness={0.3} />
+              </mesh>
+              <mesh position={[cx * 0.27, 0.03, cz * 0.27]} rotation={[0, angle, Math.PI / 2]}>
+                <cylinderGeometry args={[0.03, 0.03, 0.028, 16]} />
+                <meshStandardMaterial color="#121116" roughness={0.6} />
+              </mesh>
+            </group>
+          );
+        })}
       </group>
 
       {/* Dumbbell on the floor — a nod to the gym */}
