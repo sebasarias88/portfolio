@@ -81,16 +81,21 @@ export async function POST(request: NextRequest) {
       let streamedText = "";
       try {
         const handedOff = body.handedOff === true;
-        const { handoffInput } = await provider.stream({
-          system: buildSystemPrompt({ handedOff }),
-          messages: body.messages,
-          signal: request.signal,
-          allowHandoff: !handedOff,
-          onText: (delta) => {
-            streamedText += delta;
-            controller.enqueue(line({ type: "text", value: delta }));
-          },
-        });
+        const ask = () =>
+          provider.stream({
+            system: buildSystemPrompt({ handedOff }),
+            messages: body.messages,
+            signal: request.signal,
+            allowHandoff: !handedOff,
+            onText: (delta) => {
+              streamedText += delta;
+              controller.enqueue(line({ type: "text", value: delta }));
+            },
+          });
+        let result = await ask();
+        // Free models occasionally return nothing at all: retry once before falling back
+        if (result.empty && result.handoffInput === undefined && !streamedText.trim()) result = await ask();
+        const { handoffInput } = result;
 
         // Already handed off: just talk, never create a second lead or card
         if (handedOff) {

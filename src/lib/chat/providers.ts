@@ -19,6 +19,8 @@ interface StreamOptions {
 /** Raw tool input returned by the model (validated by the caller). */
 export interface StreamResult {
   handoffInput?: unknown;
+  /** True when the model produced neither text nor a tool call. */
+  empty?: boolean;
 }
 
 export interface ChatProvider {
@@ -115,6 +117,9 @@ function groqProvider(apiKey: string): ChatProvider {
       let buffer = "";
       let toolName = "";
       let toolArgs = "";
+      let gotText = false;
+      let streamError = "";
+      let finishReason = "";
 
       for (;;) {
         const { done, value } = await reader.read();
@@ -128,12 +133,26 @@ function groqProvider(apiKey: string): ChatProvider {
           if (!data || data === "[DONE]") continue;
           let delta: GroqDelta | undefined;
           try {
-            delta = (JSON.parse(data) as { choices?: { delta?: GroqDelta }[] }).choices?.[0]?.delta;
+            const parsed = JSON.parse(data) as {
+              choices?: { delta?: GroqDelta; finish_reason?: string | null }[];
+              error?: { message?: string; code?: string };
+            };
+            // Groq reports mid-stream failures (e.g. tool_use_failed) as an error event
+            if (parsed.error) {
+              streamError = `${parsed.error.code ?? "error"}: ${parsed.error.message ?? ""}`.slice(0, 300);
+              continue;
+            }
+            const choice = parsed.choices?.[0];
+            if (choice?.finish_reason) finishReason = choice.finish_reason;
+            delta = choice?.delta;
           } catch {
             continue;
           }
           if (!delta) continue;
-          if (delta.content) onText(delta.content);
+          if (delta.content) {
+            gotText = true;
+            onText(delta.content);
+          }
           for (const call of delta.tool_calls ?? []) {
             if (call.function?.name) toolName = call.function.name;
             if (call.function?.arguments) toolArgs += call.function.arguments;
@@ -141,7 +160,10 @@ function groqProvider(apiKey: string): ChatProvider {
         }
       }
 
-      if (!allowHandoff || toolName !== HANDOFF_TOOL_NAME) return {};
+      if (!gotText && !toolName) {
+        console.error("[chat] groq returned an empty answer", { finishReason, streamError });
+      }
+      if (!allowHandoff || toolName !== HANDOFF_TOOL_NAME) return { empty: !gotText };
       try {
         return { handoffInput: JSON.parse(toolArgs || "{}") };
       } catch {
