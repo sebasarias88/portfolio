@@ -106,8 +106,9 @@ export function Hero() {
           immediate
           text={profile.name}
           className={cn(
-            "leading-[0.9] font-semibold",
             show3d ? "max-w-[9ch] text-[clamp(3.25rem,8vw,8rem)]" : "text-[clamp(3.25rem,12vw,10.5rem)]",
+            // Line-height must come after the font-size class or tailwind-merge drops it
+            "leading-[0.92] font-semibold",
           )}
         />
 
