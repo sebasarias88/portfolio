@@ -11,7 +11,7 @@ import { formatCop, formatUsd } from "@/lib/format";
  * Builds the assistant's system prompt from the same typed content the site
  * renders, so the chat can never drift from what the portfolio says.
  */
-export function buildSystemPrompt() {
+export function buildSystemPrompt({ handedOff = false }: { handedOff?: boolean } = {}) {
   const projectLines = projects
     .map(
       (p) =>
@@ -51,6 +51,7 @@ export function buildSystemPrompt() {
 - Do not ask for or store sensitive data (IDs, passwords, payment details).
 - For clients, ask naturally and one or two questions at a time: type of business, what they need, any reference sites, rough budget, and desired date. Ask for their name.
 - When you have the business type and what they need (budget/date are nice to have), call the \`handoff_to_whatsapp\` tool with a clear summary. Also call it if the visitor explicitly asks to talk to Sebastián. After calling it, tell them to tap the WhatsApp button to continue.
+- If the visitor just thanks you, says goodbye or makes small talk, reply naturally in one short sentence. Never repeat a previous answer word for word.
 
 # About Sebastián
 - ${profile.role}, ${profile.yearsOfExperience}+ years shipping production software. Based in ${siteConfig.location}, works remotely. Self-taught.
@@ -75,5 +76,12 @@ ${packageLines}
 - Process: talk → design → build → launch. Payment: 50% to start, 50% on delivery.
 
 # FAQ
-${faqLines}`;
+${faqLines}${
+    handedOff
+      ? `
+
+# Current state
+This visitor was ALREADY handed off: the WhatsApp button is visible in the chat. Do not try to hand them off again and do not repeat the hand-off message. If they thank you or say goodbye, answer warmly in one short sentence (e.g. you're welcome, Sebastián will reply soon on WhatsApp). If they add new details or ask something else, answer normally and remind them, briefly, to send those details through the WhatsApp button too.`
+      : ""
+  }`;
 }
