@@ -82,7 +82,7 @@ export function Hero() {
 
   return (
     <section ref={root} className={cn("relative", show3d && "h-[260vh]")}>
-      <div className="sticky top-0 flex min-h-svh items-center overflow-hidden pt-24 pb-16">
+      <div className="sticky top-0 flex min-h-svh items-center overflow-hidden pt-24 pb-16 short:pt-20 short:pb-10">
       {show3d ? (
         <div className="pointer-events-none absolute inset-0">
           <HeroScene progress={progress} />
@@ -93,11 +93,11 @@ export function Hero() {
       <div data-hero-flash className="pointer-events-none absolute inset-0 z-20 bg-bg opacity-0" aria-hidden="true" />
 
       <div data-hero-content className="container-page relative z-10 origin-top">
-        <div data-hero-fade className="mb-8">
+        <div data-hero-fade className="mb-8 short:mb-5 shorter:mb-3">
           <AvailabilityBadge />
         </div>
 
-        <p data-hero-fade className="mb-4 font-mono text-xs tracking-[0.25em] text-accent uppercase">
+        <p data-hero-fade className="mb-4 font-mono text-xs tracking-[0.25em] text-accent uppercase short:mb-3">
           {t("eyebrow")} · {t("years", { count: profile.yearsOfExperience })}
         </p>
 
@@ -106,18 +106,19 @@ export function Hero() {
           immediate
           text={profile.name}
           className={cn(
-            show3d ? "max-w-[9ch] text-[clamp(3.25rem,8vw,8rem)]" : "text-[clamp(3.25rem,12vw,10.5rem)]",
+            // Scales with width AND height so the whole hero fits short laptop screens
+            show3d ? "max-w-[9ch] text-[clamp(3rem,min(8vw,13svh),8rem)]" : "text-[clamp(3.25rem,min(12vw,16svh),10.5rem)]",
             // Line-height must come after the font-size class or tailwind-merge drops it
             "leading-[0.92] font-semibold",
           )}
         />
 
-        <div className={cn("mt-10 grid gap-10", show3d ? "max-w-xl" : "md:grid-cols-[1.2fr_1fr] md:items-end")}>
+        <div className={cn("mt-10 grid gap-10 short:mt-6 short:gap-6 shorter:mt-4 shorter:gap-5", show3d ? "max-w-xl" : "md:grid-cols-[1.2fr_1fr] md:items-end")}>
           <div>
-            <p data-hero-fade className="font-display text-2xl leading-snug font-medium text-balance md:text-3xl">
+            <p data-hero-fade className="font-display text-2xl leading-snug font-medium text-balance md:text-3xl short:md:text-2xl">
               {profile.headline[locale]}
             </p>
-            <p data-hero-fade className="mt-4 max-w-xl text-base leading-relaxed text-fg-muted md:text-lg">
+            <p data-hero-fade className="mt-4 max-w-lg text-base leading-relaxed text-fg-muted md:text-lg short:mt-3 short:md:text-base">
               {profile.intro[locale]}
             </p>
           </div>
@@ -135,7 +136,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div data-hero-fade data-hero-cue className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-fg-muted" aria-hidden="true">
+      <div data-hero-fade data-hero-cue className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-fg-muted shorter:hidden" aria-hidden="true">
         <div className="flex flex-col items-center gap-2 font-mono text-[10px] tracking-[0.3em] uppercase">
           {tc("scroll")}
           <span className="relative block h-10 w-px overflow-hidden bg-border">
