@@ -4,7 +4,7 @@ import { getClientIp, getRateLimitKey, getVisitorHash, isBot, isSameOrigin } fro
 import { buildSystemPrompt } from "@/lib/chat/knowledge";
 import { getChatProvider } from "@/lib/chat/providers";
 import { chatRequestSchema, type ChatStreamChunk } from "@/lib/chat/schema";
-import { handoffInputSchema } from "@/lib/chat/tools";
+import { handoffInputSchema, type HandoffInput } from "@/lib/chat/tools";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const maxDuration = 30;
@@ -17,6 +17,23 @@ const LIMITS = {
   perIpDay: 60,
   globalDay: 300,
 };
+
+const HANDOFF_TEXT = {
+  es: "¡Perfecto! Ya tengo lo necesario. Toca el botón para seguir con Sebastián por WhatsApp.",
+  en: "Perfect, I have what I need. Tap the button to continue with Sebastián on WhatsApp.",
+} as const;
+
+/** Builds a hand-off from the visitor's own messages when the model gives us nothing usable. */
+function fallbackHandoff(messages: { role: "user" | "assistant"; content: string }[], locale: "es" | "en"): HandoffInput {
+  const fromVisitor = messages
+    .filter((m) => m.role === "user")
+    .slice(-3)
+    .map((m) => m.content.trim())
+    .join(" · ")
+    .slice(0, 1000);
+  const intro = locale === "es" ? "Hola Sebastián, vengo del chat de tu portafolio" : "Hi Sebastián, I'm coming from your portfolio chat";
+  return { need: fromVisitor || intro, summary: fromVisitor ? `${intro}: ${fromVisitor}` : `${intro}.` };
+}
 
 const encoder = new TextEncoder();
 const line = (chunk: ChatStreamChunk) => encoder.encode(`${JSON.stringify(chunk)}\n`);
@@ -55,17 +72,37 @@ export async function POST(request: NextRequest) {
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
+      let streamedText = "";
       try {
         const { handoffInput } = await provider.stream({
           system: buildSystemPrompt(),
           messages: body.messages,
           signal: request.signal,
-          onText: (delta) => controller.enqueue(line({ type: "text", value: delta })),
+          onText: (delta) => {
+            streamedText += delta;
+            controller.enqueue(line({ type: "text", value: delta }));
+          },
         });
 
-        const parsed = handoffInputSchema.safeParse(handoffInput);
-        if (handoffInput !== undefined && parsed.success) {
-          const data = parsed.data;
+        const wantsHandoff = handoffInput !== undefined;
+        const parsed = handoffInputSchema.safeParse(handoffInput ?? {});
+        if (wantsHandoff && !parsed.success) {
+          console.error("[chat] hand-off input normalized with fallback", JSON.stringify(handoffInput).slice(0, 300));
+        }
+
+        // Never leave the visitor in silence: a hand-off without usable fields, or an
+        // empty answer, falls back to a summary built from what the visitor wrote.
+        const data =
+          parsed.success && wantsHandoff
+            ? parsed.data
+            : wantsHandoff || !streamedText.trim()
+              ? fallbackHandoff(body.messages, body.locale)
+              : null;
+
+        if (data) {
+          if (!streamedText.trim()) {
+            controller.enqueue(line({ type: "text", value: HANDOFF_TEXT[body.locale] }));
+          }
           const { error } = await supabase.from("leads").insert({
             source: "chat",
             locale: body.locale,
