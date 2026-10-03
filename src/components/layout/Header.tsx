@@ -75,6 +75,8 @@ export function Header() {
           <a
             href={siteConfig.resume[locale]}
             download
+            data-track="cv_download"
+            data-track-label="header"
             className="hidden rounded-full bg-fg px-4 py-2.5 text-xs font-medium text-bg transition-opacity hover:opacity-85 lg:inline-flex"
           >
             {tc("downloadCv")}

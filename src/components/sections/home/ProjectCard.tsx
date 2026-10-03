@@ -55,7 +55,7 @@ export function ProjectCard({ project, index, total }: ProjectCardProps) {
             {tc("viewProject")} <ArrowIcon />
           </Button>
           {project.liveUrl && (
-            <Button external href={project.liveUrl} variant="secondary">
+            <Button external href={project.liveUrl} variant="secondary" data-track="outbound_click" data-track-label={project.slug}>
               {tc("visitSite")}
             </Button>
           )}

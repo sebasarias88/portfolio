@@ -87,7 +87,7 @@ export function Hero() {
                 {tc("contactMe")} <ArrowIcon />
               </Button>
             </Magnetic>
-            <Button external href={siteConfig.resume[locale]} variant="secondary" download>
+            <Button external href={siteConfig.resume[locale]} variant="secondary" download data-track="cv_download" data-track-label="hero">
               {tc("downloadCv")}
             </Button>
           </div>

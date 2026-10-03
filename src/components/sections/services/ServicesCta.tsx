@@ -13,7 +13,7 @@ export function ServicesCta() {
         <SplitHeading text={t("ctaTitle")} className="mx-auto max-w-4xl text-5xl leading-[0.95] font-semibold md:text-8xl" />
         <p className="mt-6 text-lg text-fg-muted">{t("ctaSubtitle")}</p>
         <div className="mt-10 flex justify-center">
-          <Button external href={buildWhatsAppUrl(t("ctaMessage"))} className="px-8 py-4 text-base">
+          <Button external href={buildWhatsAppUrl(t("ctaMessage"))} data-track="whatsapp_click" data-track-label="services-cta" className="px-8 py-4 text-base">
             WhatsApp <ArrowIcon />
           </Button>
         </div>

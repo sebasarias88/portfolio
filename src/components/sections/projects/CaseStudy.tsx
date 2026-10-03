@@ -43,7 +43,7 @@ export function CaseStudy({ project, next }: CaseStudyProps) {
         </dl>
         {project.liveUrl && (
           <div className="mt-8">
-            <Button external href={project.liveUrl}>
+            <Button external href={project.liveUrl} data-track="outbound_click" data-track-label={project.slug}>
               {tc("visitSite")} <ArrowIcon />
             </Button>
           </div>

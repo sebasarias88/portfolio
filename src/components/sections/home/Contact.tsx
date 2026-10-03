@@ -12,9 +12,9 @@ export function Contact() {
   const locale = useLocale() as Locale;
 
   const links = [
-    { label: "LinkedIn", href: siteConfig.socials.linkedin },
-    { label: "GitHub", href: siteConfig.socials.github },
-    { label: t("whatsapp"), href: buildWhatsAppUrl(t("whatsappMessage")) },
+    { label: "LinkedIn", href: siteConfig.socials.linkedin, event: "outbound_click" },
+    { label: "GitHub", href: siteConfig.socials.github, event: "outbound_click" },
+    { label: t("whatsapp"), href: buildWhatsAppUrl(t("whatsappMessage")), event: "whatsapp_click" },
   ];
 
   return (
@@ -27,11 +27,11 @@ export function Contact() {
 
         <div className="mt-12 flex flex-wrap items-center gap-4">
           <Magnetic>
-            <Button external href={`mailto:${siteConfig.email}`} className="px-8 py-4 text-base">
+            <Button external href={`mailto:${siteConfig.email}`} data-track="email_click" className="px-8 py-4 text-base">
               {t("email")} <ArrowIcon />
             </Button>
           </Magnetic>
-          <Button external href={siteConfig.resume[locale]} variant="secondary" download className="px-8 py-4 text-base">
+          <Button external href={siteConfig.resume[locale]} variant="secondary" download data-track="cv_download" data-track-label="contact" className="px-8 py-4 text-base">
             {tc("downloadCv")}
           </Button>
         </div>
@@ -39,7 +39,7 @@ export function Contact() {
         <ul className="mt-16 flex flex-wrap gap-x-10 gap-y-4 border-t border-border pt-8">
           {links.map((l) => (
             <li key={l.label}>
-              <a href={l.href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 text-lg hover:text-accent">
+              <a href={l.href} target="_blank" rel="noopener noreferrer" data-track={l.event} data-track-label={l.label} className="group inline-flex items-center gap-2 text-lg hover:text-accent">
                 {l.label} <ArrowIcon />
               </a>
             </li>

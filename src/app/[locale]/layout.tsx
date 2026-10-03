@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Preloader } from "@/components/layout/Preloader";
@@ -77,6 +78,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               <Header />
               <main id="main">{children}</main>
               <Footer />
+              <AnalyticsTracker />
             </SmoothScrollProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

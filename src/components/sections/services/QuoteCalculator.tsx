@@ -6,6 +6,7 @@ import { ArrowIcon } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { QUOTE_RANGE_FACTOR, quoteAddons, quoteBase } from "@/content/services";
 import type { Locale } from "@/i18n/routing";
+import { track } from "@/lib/analytics/client";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -33,6 +34,17 @@ export function QuoteCalculator() {
 
   const toggleAddon = (id: string) =>
     setAddons((current) => (current.includes(id) ? current.filter((a) => a !== id) : [...current, id]));
+
+  const recordQuote = () => {
+    track("quote_sent", { type: baseId, addons: addons.join(",") });
+    if (process.env.NODE_ENV !== "production") return;
+    fetch("/api/quote", {
+      method: "POST",
+      keepalive: true,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ locale, type: baseId, addons, estimate: `${min} – ${max}` }),
+    }).catch(() => {});
+  };
 
   const message = [
     t("messageIntro"),
@@ -100,6 +112,7 @@ export function QuoteCalculator() {
             href={buildWhatsAppUrl(message)}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={recordQuote}
             className="group mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-medium text-accent-fg transition-shadow hover:shadow-[0_8px_40px_-8px_var(--accent-glow)]"
           >
             {t("send")} <ArrowIcon />
