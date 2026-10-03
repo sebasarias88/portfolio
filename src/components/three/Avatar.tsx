@@ -6,6 +6,10 @@ import * as THREE from "three";
 import type { SceneTheme } from "./sceneTheme";
 
 const SKIN = "#c98e6b";
+/** Avatar depth: hips sit at the back of the seat, back against the chair. */
+export const AVATAR_Z = 0.55;
+const UPPER_ARM_TILT = 0.45;
+const FOREARM_BEND = 1.0;
 const HAIR = "#121014";
 
 /** Procedural ink texture standing in for the right-arm tattoo sleeve. */
@@ -39,6 +43,32 @@ function useSleeveTexture() {
   }, []);
 }
 
+/** White V on black: alpha mask that shapes the hairline into a V at the nape. */
+function useVMask() {
+  return useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, 256, 128);
+    // Canvas top maps to the crown side of the slice (flipY), so the V narrows toward the nape
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(256, 0);
+    ctx.lineTo(256, 22);
+    ctx.quadraticCurveTo(170, 60, 128, 124);
+    ctx.quadraticCurveTo(86, 60, 0, 22);
+    ctx.closePath();
+    ctx.fill();
+    const tex = new THREE.CanvasTexture(canvas);
+    return tex;
+  }, []);
+}
+
 interface AvatarProps {
   theme: SceneTheme;
   pointer: React.RefObject<{ x: number; y: number }>;
@@ -55,6 +85,7 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
   const leftForearm = useRef<THREE.Group>(null);
   const rightForearm = useRef<THREE.Group>(null);
   const sleeve = useSleeveTexture();
+  const vMask = useVMask();
 
   const skin = useMemo(() => new THREE.MeshStandardMaterial({ color: SKIN, roughness: 0.6 }), []);
   const inked = useMemo(
@@ -72,9 +103,10 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     for (let i = 0; i < 160; i++) {
       const theta = rand() * Math.PI * 2;
-      // Front (-z) curls fall a little lower, like a fringe
+      // Longer at the front (fringe) and back; short on the sides (fade)
       const front = Math.max(0, -Math.sin(theta));
-      const phi = Math.sqrt(rand()) * (0.95 + front * 0.25);
+      const back = Math.max(0, Math.sin(theta));
+      const phi = Math.sqrt(rand()) * (1.05 + front * 0.3 + back * 0.15);
       const r = 0.178;
       out.push([
         Math.sin(phi) * Math.cos(theta) * r * 0.93,
@@ -95,13 +127,13 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
       head.current.rotation.x = THREE.MathUtils.lerp(head.current.rotation.x, -0.08 + p.y * 0.12 + Math.sin(t * 1.3) * 0.015, 0.05);
     }
     if (torso.current) torso.current.scale.y = 1 + Math.sin(t * 1.6) * 0.008;
-    if (leftForearm.current) leftForearm.current.rotation.x = 1.35 + Math.sin(t * 14) * 0.035;
-    if (rightForearm.current) rightForearm.current.rotation.x = 1.35 + Math.sin(t * 13 + 1.7) * 0.035;
+    if (leftForearm.current) leftForearm.current.rotation.x = FOREARM_BEND + Math.sin(t * 14) * 0.03;
+    if (rightForearm.current) rightForearm.current.rotation.x = FOREARM_BEND + Math.sin(t * 13 + 1.7) * 0.03;
   });
 
   return (
     // Seated, facing the monitor (-z)
-    <group position={[0, 0, 0.5]}>
+    <group position={[0, 0, AVATAR_Z]}>
       {/* Legs */}
       <mesh material={pants} position={[-0.13, 0.55, -0.22]} rotation={[Math.PI / 2, 0, 0]}>
         <capsuleGeometry args={[0.085, 0.36, 6, 12]} />
@@ -135,11 +167,17 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
           <mesh material={skin} position={[0, -0.075, -0.035]} scale={[0.95, 0.78, 1]}>
             <sphereGeometry args={[0.125, 24, 24]} />
           </mesh>
-          {/* Stubble shadow on jaw and upper lip */}
-          <mesh position={[0, -0.08, -0.04]} scale={[0.97, 0.8, 1.02]}>
-            <sphereGeometry args={[0.127, 24, 24, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.55]} />
-            <meshStandardMaterial color="#3a2a26" transparent opacity={0.35} roughness={1} />
+          {/* Full, even, very light beard shadow: jawline + chin + sideburns */}
+          <mesh position={[0, -0.075, -0.035]} scale={[0.965, 0.79, 1.012]}>
+            <sphereGeometry args={[0.1265, 32, 24, Math.PI, Math.PI, Math.PI * 0.42, Math.PI * 0.58]} />
+            <meshStandardMaterial color="#2b1e1a" transparent opacity={0.16} roughness={1} depthWrite={false} />
           </mesh>
+          {[-1, 1].map((side) => (
+            <mesh key={side} position={[side * 0.146, -0.005, -0.025]} rotation={[0, side * 0.35, 0]}>
+              <boxGeometry args={[0.012, 0.075, 0.035]} />
+              <meshStandardMaterial color="#2b1e1a" transparent opacity={0.18} roughness={1} depthWrite={false} />
+            </mesh>
+          ))}
           {/* Nose */}
           <mesh material={skin} position={[0, -0.01, -0.165]} scale={[0.8, 1.2, 1]}>
             <sphereGeometry args={[0.028, 16, 16]} />
@@ -176,6 +214,13 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
           <mesh material={hair} position={[0, 0.015, 0.004]} scale={[0.93, 0.98, 1]}>
             <sphereGeometry args={[0.176, 32, 20, 0, Math.PI * 2, 0, Math.PI * 0.44]} />
           </mesh>
+          {/* V-fade at the back: a hair shell cut into a V by an alpha mask */}
+          {vMask && (
+            <mesh position={[0, 0.015, 0.004]} scale={[0.93, 0.98, 1]}>
+              <sphereGeometry args={[0.1768, 40, 16, Math.PI / 2 - 1.15, 2.3, Math.PI * 0.4, Math.PI * 0.24]} />
+              <meshStandardMaterial color={HAIR} roughness={0.9} alphaMap={vMask} alphaTest={0.5} side={THREE.DoubleSide} />
+            </mesh>
+          )}
           {/* Curls sitting on the cap */}
           {curls.map(([x, y, z, r], i) => (
             <mesh key={i} material={hair} position={[x, y, z]}>
@@ -184,40 +229,50 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
           ))}
         </group>
 
-        {/* Left arm (plain) */}
-        <group position={[-0.31, 0.16, 0]} rotation={[0.35, 0, 0.12]}>
-          <mesh material={shirt} position={[0, -0.04, 0]}>
-            <capsuleGeometry args={[0.085, 0.08, 6, 12]} />
-          </mesh>
-          <mesh material={skin} position={[0, -0.17, 0]}>
-            <capsuleGeometry args={[0.078, 0.16, 6, 12]} />
-          </mesh>
-          <group ref={leftForearm} position={[0, -0.3, 0]}>
-            <mesh material={skin} position={[0, -0.13, 0]}>
-              <capsuleGeometry args={[0.062, 0.2, 6, 12]} />
-            </mesh>
-            <mesh material={skin} position={[0, -0.28, 0]}>
-              <sphereGeometry args={[0.055, 12, 12]} />
-            </mesh>
-          </group>
-        </group>
+        {/* Arms reaching the keyboard, with hands */}
+        <Arm side={-1} upper={skin} lower={skin} hand={skin} shirt={shirt} forearmRef={leftForearm} />
+        <Arm side={1} upper={inked} lower={inked} hand={skin} shirt={shirt} forearmRef={rightForearm} />
+      </group>
+    </group>
+  );
+}
 
-        {/* Right arm (tattoo sleeve) */}
-        <group position={[0.31, 0.16, 0]} rotation={[0.35, 0, -0.12]}>
-          <mesh material={shirt} position={[0, -0.04, 0]}>
-            <capsuleGeometry args={[0.085, 0.08, 6, 12]} />
+interface ArmProps {
+  side: -1 | 1;
+  upper: THREE.Material;
+  lower: THREE.Material;
+  hand: THREE.Material;
+  shirt: THREE.Material;
+  forearmRef: React.RefObject<THREE.Group | null>;
+}
+
+/** Shoulder → elbow → wrist chain ending in a simple hand resting on the keys. */
+function Arm({ side, upper, lower, hand, shirt, forearmRef }: ArmProps) {
+  return (
+    <group position={[side * 0.31, 0.16, 0]} rotation={[UPPER_ARM_TILT, 0, -side * 0.14]}>
+      <mesh material={shirt} position={[0, -0.04, 0]}>
+        <capsuleGeometry args={[0.088, 0.08, 6, 12]} />
+      </mesh>
+      <mesh material={upper} position={[0, -0.17, 0]}>
+        <capsuleGeometry args={[0.08, 0.16, 6, 12]} />
+      </mesh>
+      <group ref={forearmRef} position={[0, -0.3, 0]} rotation={[FOREARM_BEND, 0, 0]}>
+        <mesh material={lower} position={[0, -0.12, 0]}>
+          <capsuleGeometry args={[0.062, 0.18, 6, 12]} />
+        </mesh>
+        {/* Hand: palm + four fingers + thumb, slightly curled over the keys */}
+        <group position={[0, -0.255, 0.008]} rotation={[0.25, 0, 0]}>
+          <mesh material={hand} scale={[1, 1, 0.42]}>
+            <capsuleGeometry args={[0.038, 0.04, 6, 12]} />
           </mesh>
-          <mesh material={inked} position={[0, -0.17, 0]}>
-            <capsuleGeometry args={[0.078, 0.16, 6, 12]} />
+          {[-0.027, -0.009, 0.009, 0.027].map((x, i) => (
+            <mesh key={x} material={hand} position={[x, -0.058 - (i === 1 || i === 2 ? 0.006 : 0), 0.012]} rotation={[0.55, 0, 0]}>
+              <capsuleGeometry args={[0.0085, 0.036, 4, 8]} />
+            </mesh>
+          ))}
+          <mesh material={hand} position={[-side * 0.042, -0.02, 0.006]} rotation={[0.3, 0, -side * 0.7]}>
+            <capsuleGeometry args={[0.01, 0.03, 4, 8]} />
           </mesh>
-          <group ref={rightForearm} position={[0, -0.3, 0]}>
-            <mesh material={inked} position={[0, -0.13, 0]}>
-              <capsuleGeometry args={[0.062, 0.2, 6, 12]} />
-            </mesh>
-            <mesh material={skin} position={[0, -0.28, 0]}>
-              <sphereGeometry args={[0.055, 12, 12]} />
-            </mesh>
-          </group>
         </group>
       </group>
     </group>

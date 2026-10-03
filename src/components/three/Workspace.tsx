@@ -1,6 +1,7 @@
 "use client";
 
 import { RoundedBox } from "@react-three/drei";
+import { AVATAR_Z } from "./Avatar";
 import { CodeScreen } from "./CodeScreen";
 import type { SceneTheme } from "./sceneTheme";
 
@@ -46,15 +47,15 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
       </group>
 
       {/* Keyboard with soft backlight */}
-      <RoundedBox args={[0.5, 0.02, 0.16]} radius={0.008} position={[0, 0.785, -0.02]}>
+      <RoundedBox args={[0.5, 0.02, 0.16]} radius={0.008} position={[0, 0.785, 0.13]}>
         <meshStandardMaterial color="#141218" roughness={0.5} />
       </RoundedBox>
-      <mesh position={[0, 0.796, -0.02]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 0.796, 0.13]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.46, 0.12]} />
         <meshBasicMaterial color={theme.accent} transparent opacity={0.25} toneMapped={false} />
       </mesh>
       {/* Mouse */}
-      <mesh position={[0.38, 0.79, -0.02]} scale={[1, 0.5, 1.4]}>
+      <mesh position={[0.4, 0.79, 0.12]} scale={[1, 0.5, 1.4]}>
         <sphereGeometry args={[0.035, 16, 16]} />
         <meshStandardMaterial color="#141218" roughness={0.4} />
       </mesh>
@@ -85,7 +86,7 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
       </group>
 
       {/* Gaming chair (black with red accents) */}
-      <group position={[0, 0, 0.78]}>
+      <group position={[0, 0, AVATAR_Z - 0.02]}>
         <RoundedBox args={[0.55, 0.08, 0.5]} radius={0.03} position={[0, 0.48, 0]}>
           <meshStandardMaterial color={theme.chair} roughness={0.6} />
         </RoundedBox>
@@ -105,7 +106,7 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
       </group>
 
       {/* Dumbbell on the floor — a nod to the gym */}
-      <group position={[-0.75, 0.06, 0.45]} rotation={[0, 0.6, 0]}>
+      <group position={[-0.95, 0.06, 0.15]} rotation={[0, 0.9, 0]}>
         <mesh rotation={[0, 0, Math.PI / 2]}>
           <cylinderGeometry args={[0.015, 0.015, 0.36, 12]} />
           <meshStandardMaterial color={theme.metal} metalness={0.7} roughness={0.3} />

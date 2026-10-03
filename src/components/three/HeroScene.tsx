@@ -16,10 +16,9 @@ interface HeroSceneProps {
   progress: React.RefObject<number>;
 }
 
-// Side three-quarter view: profile of the avatar and the screen at once
-const START_POS = new THREE.Vector3(3.5, 2.15, 2.0);
+const START_POS = new THREE.Vector3(3.3, 2.35, 3.4);
 // Aimed left of the desk so the scene sits on the right, beside the copy
-const START_TARGET = new THREE.Vector3(-1.0, 0.98, -0.05);
+const START_TARGET = new THREE.Vector3(-1.05, 0.95, 0.15);
 const END_POS = new THREE.Vector3(MONITOR.position[0], MONITOR.position[1], MONITOR.position[2] + 0.62);
 const END_TARGET = new THREE.Vector3(...MONITOR.position);
 
