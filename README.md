@@ -9,15 +9,20 @@ Personal portfolio (for recruiters) and services site (for clients), in Spanish 
 - **next-intl** for i18n (`/es`, `/en`)
 - **GSAP** (ScrollTrigger, SplitText) + **Lenis** smooth scroll
 - **Three.js / React Three Fiber / Drei** (installed for Phase 3 — 3D desk + avatar)
+- **Supabase** — cookie-less analytics, leads and the private `/admin` dashboard (see `supabase/README.md`)
+- **AI chat** — `/api/chat`, provider chosen by `AI_PROVIDER` (Groq free tier or Anthropic Claude)
 
 ## Getting started
 
+This project uses **yarn**.
+
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run build      # production build
-npm run lint
-npm run typecheck
+yarn install
+cp .env.example .env.local   # then fill in the keys
+yarn dev           # http://localhost:3000
+yarn build         # production build
+yarn lint
+yarn typecheck
 ```
 
 ## Project structure
