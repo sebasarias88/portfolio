@@ -4,6 +4,7 @@ import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Preloader } from "@/components/layout/Preloader";
@@ -79,6 +80,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               <main id="main">{children}</main>
               <Footer />
               <AnalyticsTracker />
+              <ChatWidget />
             </SmoothScrollProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

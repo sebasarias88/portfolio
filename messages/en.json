@@ -138,5 +138,31 @@
     "eyebrow": "Clients",
     "title": "What clients say",
     "placeholder": "Draft · dev only"
+  },
+  "Chat": {
+    "open": "Ask my AI",
+    "title": "Sebastián's assistant",
+    "subtitle": "AI · instant answers",
+    "close": "Close chat",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "greeting": "Hi! I'm Sebastián's assistant. I can tell you about his experience and projects, or help you shape your website idea. How can I help?",
+    "suggestions": [
+      "What's his tech stack?",
+      "I need a website for my business",
+      "Is he available for hire?",
+      "How much does an online store cost?"
+    ],
+    "handoffTitle": "Done! Your idea is organized",
+    "handoffText": "Tap the button to continue the conversation with Sebastián on WhatsApp.",
+    "handoffCta": "Continue on WhatsApp",
+    "disclaimer": "AI-generated answers; they may contain mistakes.",
+    "errorRateLimited": "You've reached the message limit for now. Message Sebastián directly on WhatsApp.",
+    "errorUnavailable": "Chat is unavailable right now. Message Sebastián on WhatsApp.",
+    "errorFailed": "Something went wrong. Try again or use WhatsApp.",
+    "tooLong": "Max {max} characters",
+    "limitReached": "This conversation reached its limit. Continue on WhatsApp to keep talking.",
+    "whatsappFallback": "Message on WhatsApp",
+    "whatsappFallbackMessage": "Hi Sebastián, I'm coming from your portfolio chat."
   }
 }

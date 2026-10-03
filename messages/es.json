@@ -138,5 +138,31 @@
     "eyebrow": "Clientes",
     "title": "Lo que dicen quienes trabajaron conmigo",
     "placeholder": "Borrador · solo en desarrollo"
+  },
+  "Chat": {
+    "open": "Pregúntale a mi IA",
+    "title": "Asistente de Sebastián",
+    "subtitle": "IA · responde al instante",
+    "close": "Cerrar chat",
+    "placeholder": "Escribe tu pregunta…",
+    "send": "Enviar",
+    "greeting": "¡Hola! Soy el asistente de Sebastián. Puedo contarte sobre su experiencia y proyectos, o ayudarte a armar la idea de tu página web. ¿En qué te ayudo?",
+    "suggestions": [
+      "¿Con qué tecnologías trabaja?",
+      "Quiero una página para mi negocio",
+      "¿Está disponible para trabajar?",
+      "¿Cuánto cuesta una tienda en línea?"
+    ],
+    "handoffTitle": "¡Listo! Ya tengo tu idea organizada",
+    "handoffText": "Toca el botón y continúa la conversación con Sebastián por WhatsApp.",
+    "handoffCta": "Continuar por WhatsApp",
+    "disclaimer": "Respuestas generadas con IA; pueden contener errores.",
+    "errorRateLimited": "Llegaste al límite de mensajes por ahora. Escríbele directo a Sebastián por WhatsApp.",
+    "errorUnavailable": "El chat no está disponible en este momento. Escríbele a Sebastián por WhatsApp.",
+    "errorFailed": "Algo salió mal. Intenta de nuevo o escribe por WhatsApp.",
+    "tooLong": "Máximo {max} caracteres",
+    "limitReached": "Esta conversación llegó a su límite. Continúa por WhatsApp para seguir hablando.",
+    "whatsappFallback": "Escribir por WhatsApp",
+    "whatsappFallbackMessage": "Hola Sebastián, vengo del chat de tu portafolio."
   }
 }
