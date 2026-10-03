@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, type ElementType } from "react";
+import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { onPreloaderDone } from "@/lib/preloader";
 import { cn } from "@/lib/utils";
 
 interface SplitHeadingProps {
   text: string;
-  as?: ElementType;
+  as?: "h1" | "h2" | "h3" | "p";
   className?: string;
   /** Run on mount instead of on scroll (used in the hero) */
   immediate?: boolean;
@@ -15,8 +15,9 @@ interface SplitHeadingProps {
 }
 
 /** Heading whose lines slide up from a mask, Apple-keynote style. */
-export function SplitHeading({ text, as: Tag = "h2", className, immediate = false, delay = 0 }: SplitHeadingProps) {
-  const ref = useRef<HTMLElement>(null);
+export function SplitHeading({ text, as = "h2", className, immediate = false, delay = 0 }: SplitHeadingProps) {
+  const Tag = as as "h2";
+  const ref = useRef<HTMLHeadingElement>(null);
 
   useGSAP(
     () => {

@@ -12,6 +12,11 @@ export const siteConfig = {
   location: "Armenia, Quindío, Colombia",
   timeZone: "America/Bogota",
   available: true,
+  /**
+   * Path to the real 3D avatar (GLB) under /public, e.g. "/models/avatar.glb".
+   * While null, the hero renders a stylized procedural stand-in.
+   */
+  avatarModel: null as string | null,
   socials: {
     github: "https://github.com/sebasarias88",
     linkedin: "https://www.linkedin.com/in/sebastian-arias-dev/",

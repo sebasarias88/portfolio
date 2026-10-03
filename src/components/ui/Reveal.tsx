@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, type ElementType, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 interface RevealProps {
   children: ReactNode;
-  as?: ElementType;
+  as?: "div" | "section" | "ol" | "ul" | "li" | "dl" | "p";
   className?: string;
   delay?: number;
   /** Animate direct children one after another */
@@ -15,8 +15,10 @@ interface RevealProps {
 }
 
 /** Fades and lifts content into view when it enters the viewport. */
-export function Reveal({ children, as: Tag = "div", className, delay = 0, stagger = 0, y = 32 }: RevealProps) {
-  const ref = useRef<HTMLElement>(null);
+export function Reveal({ children, as = "div", className, delay = 0, stagger = 0, y = 32 }: RevealProps) {
+  // Narrow to one tag for typing; the rendered element is still `as`
+  const Tag = as as "div";
+  const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {

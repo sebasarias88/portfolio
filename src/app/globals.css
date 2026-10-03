@@ -3,6 +3,10 @@
 /* Class-based dark mode driven by next-themes */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Short desktop viewports (13" laptops, browser chrome): tighten vertical rhythm */
+@custom-variant short (@media (max-height: 860px));
+@custom-variant shorter (@media (max-height: 720px));
+
 /* ---------- Design tokens (palette 1: "Smoke violet") ---------- */
 :root {
   --bg: #f5f3fa;
