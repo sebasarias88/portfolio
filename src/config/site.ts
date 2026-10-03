@@ -5,7 +5,8 @@
 export const siteConfig = {
   name: "Sebastián Arias",
   shortName: "SA",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://sebastianarias.dev",
+  // Server-side only (metadata, sitemap, AI chat); client code never needs it
+  url: process.env.SITE_URL ?? "https://sebastianarias.dev",
   email: "sebasarias78@gmail.com",
   /** International format without "+" or spaces, used for wa.me links */
   whatsapp: "573016611852",
