@@ -22,11 +22,36 @@ export const HANDOFF_TOOL_PARAMETERS = {
   required: ["need", "summary"],
 } as const;
 
-export const handoffInputSchema = z.object({
-  name: z.string().max(120).optional(),
-  business: z.string().max(200).optional(),
-  need: z.string().min(1).max(600),
-  budget: z.string().max(120).optional(),
-  timeline: z.string().max(120).optional(),
-  summary: z.string().min(1).max(1200),
-});
+/**
+ * Models are sloppy with optional fields (null, numbers, "", extra keys) and
+ * sometimes omit `need` or `summary`. Normalize instead of rejecting, so a
+ * valid hand-off is never silently dropped.
+ */
+const optionalText = (max: number) =>
+  z.preprocess((value) => {
+    if (value === null || value === undefined) return undefined;
+    const text = String(value).trim();
+    return text ? text.slice(0, max) : undefined;
+  }, z.string().optional());
+
+export const handoffInputSchema = z
+  .object({
+    name: optionalText(120),
+    business: optionalText(200),
+    need: optionalText(600),
+    budget: optionalText(120),
+    timeline: optionalText(120),
+    summary: optionalText(1200),
+  })
+  .transform((data) => {
+    const need = data.need ?? data.summary ?? data.business ?? "";
+    const summary =
+      data.summary ??
+      [data.business && `Negocio: ${data.business}`, need && `Necesito: ${need}`, data.budget && `Presupuesto: ${data.budget}`, data.timeline && `Fecha: ${data.timeline}`]
+        .filter(Boolean)
+        .join(". ");
+    return { ...data, need, summary };
+  })
+  .refine((data) => data.need.length > 0 && data.summary.length > 0, "Empty hand-off");
+
+export type HandoffInput = z.infer<typeof handoffInputSchema>;

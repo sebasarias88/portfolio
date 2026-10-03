@@ -96,7 +96,8 @@ function groqProvider(apiKey: string): ChatProvider {
       });
 
       if (!res.ok || !res.body) {
-        throw new Error(`Groq request failed with status ${res.status}`);
+        const detail = await res.text().catch(() => "");
+        throw new Error(`Groq request failed with status ${res.status}: ${detail.slice(0, 500)}`);
       }
 
       const reader = res.body.getReader();
@@ -134,7 +135,9 @@ function groqProvider(apiKey: string): ChatProvider {
       try {
         return { handoffInput: JSON.parse(toolArgs || "{}") };
       } catch {
-        return {};
+        // Malformed arguments still mean "hand off": let the route build a fallback
+        console.error("[chat] groq returned unparseable tool arguments", toolArgs.slice(0, 300));
+        return { handoffInput: {} };
       }
     },
   };

@@ -85,6 +85,7 @@ export function ChatWidget() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let received = false;
 
       for (;;) {
         const { done, value } = await reader.read();
@@ -96,6 +97,7 @@ export function ChatWidget() {
         for (const raw of lines) {
           if (!raw.trim()) continue;
           const chunk = JSON.parse(raw) as ChatStreamChunk;
+          if (chunk.type !== "error") received = true;
           if (chunk.type === "text") {
             setMessages((prev) => {
               const next = [...prev];
@@ -110,6 +112,9 @@ export function ChatWidget() {
           }
         }
       }
+
+      // A stream that ended without any answer is an error, never silence
+      if (!received) throw new Error("errorFailed");
 
       // Drop an empty assistant bubble (e.g. the model only called the handoff tool)
       setMessages((prev) => (prev.at(-1)?.role === "assistant" && !prev.at(-1)?.content ? prev.slice(0, -1) : prev));
