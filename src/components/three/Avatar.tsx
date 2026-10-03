@@ -23,7 +23,7 @@ function useSleeveTexture() {
     ctx.lineCap = "round";
     let seed = 7;
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 120; i++) {
       ctx.lineWidth = 1 + rand() * 4;
       ctx.beginPath();
       const x = rand() * 256;
@@ -65,16 +65,23 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
   const shirt = useMemo(() => new THREE.MeshStandardMaterial({ color: theme.shirt, roughness: 0.85 }), [theme.shirt]);
   const pants = useMemo(() => new THREE.MeshStandardMaterial({ color: theme.pants, roughness: 0.9 }), [theme.pants]);
 
-  // Curly hair: a deterministic cluster of small spheres on top of the head
+  // Curly hair: deterministic small curls spread over the top of the head
   const curls = useMemo(() => {
     const out: [number, number, number, number][] = [];
-    let seed = 3;
+    let seed = 11;
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 160; i++) {
       const theta = rand() * Math.PI * 2;
-      const phi = rand() * 0.85;
-      const r = 0.205;
-      out.push([Math.sin(phi) * Math.cos(theta) * r, Math.cos(phi) * r + 0.03, Math.sin(phi) * Math.sin(theta) * r + 0.02, 0.055 + rand() * 0.03]);
+      // Front (-z) curls fall a little lower, like a fringe
+      const front = Math.max(0, -Math.sin(theta));
+      const phi = Math.sqrt(rand()) * (0.95 + front * 0.25);
+      const r = 0.178;
+      out.push([
+        Math.sin(phi) * Math.cos(theta) * r * 0.93,
+        Math.cos(phi) * r + 0.02,
+        Math.sin(phi) * Math.sin(theta) * r,
+        0.022 + rand() * 0.02,
+      ]);
     }
     return out;
   }, []);
@@ -116,37 +123,63 @@ export function ProceduralAvatar({ theme, pointer }: AvatarProps) {
         </mesh>
         {/* Neck */}
         <mesh material={skin} position={[0, 0.33, 0]}>
-          <cylinderGeometry args={[0.07, 0.085, 0.14, 16]} />
+          <cylinderGeometry args={[0.08, 0.1, 0.14, 16]} />
         </mesh>
 
-        {/* Head */}
+        {/* Head (front faces -z) */}
         <group ref={head} position={[0, 0.52, 0]}>
-          <mesh material={skin} scale={[0.92, 1.05, 0.98]}>
-            <sphereGeometry args={[0.18, 32, 32]} />
+          {/* Cranium + jaw for a less spherical, more masculine shape */}
+          <mesh material={skin} scale={[0.88, 1.06, 0.96]}>
+            <sphereGeometry args={[0.17, 32, 32]} />
           </mesh>
-          {/* Ears + black plug (left) */}
-          <mesh material={skin} position={[-0.17, 0, 0.01]} scale={[0.4, 0.7, 0.5]}>
-            <sphereGeometry args={[0.06, 12, 12]} />
+          <mesh material={skin} position={[0, -0.075, -0.035]} scale={[0.95, 0.78, 1]}>
+            <sphereGeometry args={[0.125, 24, 24]} />
           </mesh>
-          <mesh material={skin} position={[0.17, 0, 0.01]} scale={[0.4, 0.7, 0.5]}>
-            <sphereGeometry args={[0.06, 12, 12]} />
+          {/* Stubble shadow on jaw and upper lip */}
+          <mesh position={[0, -0.08, -0.04]} scale={[0.97, 0.8, 1.02]}>
+            <sphereGeometry args={[0.127, 24, 24, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.55]} />
+            <meshStandardMaterial color="#3a2a26" transparent opacity={0.35} roughness={1} />
           </mesh>
-          <mesh position={[0.188, -0.025, 0.01]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.014, 0.014, 0.012, 12]} />
+          {/* Nose */}
+          <mesh material={skin} position={[0, -0.01, -0.165]} scale={[0.8, 1.2, 1]}>
+            <sphereGeometry args={[0.028, 16, 16]} />
+          </mesh>
+          {/* Eyes and brows */}
+          {[-0.055, 0.055].map((x) => (
+            <group key={x} position={[x, 0.035, -0.142]}>
+              <mesh>
+                <sphereGeometry args={[0.018, 16, 16]} />
+                <meshStandardMaterial color="#f2ece6" roughness={0.3} />
+              </mesh>
+              <mesh position={[0, 0, -0.012]}>
+                <sphereGeometry args={[0.01, 12, 12]} />
+                <meshStandardMaterial color="#1b1210" roughness={0.2} />
+              </mesh>
+              <mesh position={[0, 0.034, -0.006]} rotation={[0.2, 0, x > 0 ? -0.12 : 0.12]}>
+                <boxGeometry args={[0.05, 0.011, 0.012]} />
+                <meshStandardMaterial color={HAIR} roughness={1} />
+              </mesh>
+            </group>
+          ))}
+          {/* Ears + black plug (right ear, toward camera) */}
+          <mesh material={skin} position={[-0.152, 0, 0.01]} scale={[0.4, 0.7, 0.5]}>
+            <sphereGeometry args={[0.055, 12, 12]} />
+          </mesh>
+          <mesh material={skin} position={[0.152, 0, 0.01]} scale={[0.4, 0.7, 0.5]}>
+            <sphereGeometry args={[0.055, 12, 12]} />
+          </mesh>
+          <mesh position={[0.168, -0.022, 0.01]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.013, 0.013, 0.012, 12]} />
             <meshStandardMaterial color="#050505" roughness={0.3} />
           </mesh>
-          {/* Low fade: short dark tint on the sides and back */}
-          <mesh scale={[0.93, 1.06, 0.99]}>
-            <sphereGeometry args={[0.183, 32, 16, 0, Math.PI * 2, Math.PI * 0.18, Math.PI * 0.3]} />
-            <meshStandardMaterial color="#4a3630" roughness={1} />
+          {/* Hair: dark cap over the top, ending just above the ears (low fade) */}
+          <mesh material={hair} position={[0, 0.015, 0.004]} scale={[0.93, 0.98, 1]}>
+            <sphereGeometry args={[0.176, 32, 20, 0, Math.PI * 2, 0, Math.PI * 0.44]} />
           </mesh>
-          {/* Curly top */}
-          <mesh material={hair} position={[0, 0.035, 0.01]} scale={[0.95, 0.75, 1]}>
-            <sphereGeometry args={[0.19, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.42]} />
-          </mesh>
+          {/* Curls sitting on the cap */}
           {curls.map(([x, y, z, r], i) => (
-            <mesh key={i} material={hair} position={[x * 0.9, y + 0.02, z * 0.95 - 0.01]}>
-              <sphereGeometry args={[r * 0.6, 8, 8]} />
+            <mesh key={i} material={hair} position={[x, y, z]}>
+              <sphereGeometry args={[r, 8, 8]} />
             </mesh>
           ))}
         </group>

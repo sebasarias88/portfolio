@@ -61,7 +61,7 @@ export function Hero() {
           });
           tl.to("[data-hero-content]", { autoAlpha: 0, x: -60, ease: "none", duration: 0.3 }, 0)
             .to("[data-hero-cue]", { autoAlpha: 0, duration: 0.1 }, 0)
-            .fromTo("[data-hero-flash]", { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.15 }, 0.85);
+            .fromTo("[data-hero-flash]", { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.08 }, 0.92);
         } else {
           // Scroll: the hero recedes like an Apple keynote slide
           gsap.to("[data-hero-content]", {

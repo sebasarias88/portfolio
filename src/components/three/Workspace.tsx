@@ -4,7 +4,8 @@ import { RoundedBox } from "@react-three/drei";
 import { CodeScreen } from "./CodeScreen";
 import type { SceneTheme } from "./sceneTheme";
 
-export const MONITOR = { position: [0, 1.22, -0.5] as const, width: 1.1, height: 0.62 };
+// 16:10 panel to match the editor canvas (1600×1000)
+export const MONITOR = { position: [0, 1.25, -0.5] as const, width: 1.1, height: 0.6875 };
 
 /** Desk, monitor, keyboard, chair and small personal props. */
 export function Workspace({ theme }: { theme: SceneTheme }) {
@@ -34,11 +35,11 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
         <group position={[0, 0, 0.001]}>
           <CodeScreen theme={theme} width={MONITOR.width} height={MONITOR.height} />
         </group>
-        <mesh position={[0, -0.36, -0.06]}>
-          <boxGeometry args={[0.05, 0.22, 0.04]} />
+        <mesh position={[0, -MONITOR.height / 2 - 0.06, -0.06]}>
+          <boxGeometry args={[0.05, 0.16, 0.04]} />
           <meshStandardMaterial color={theme.metal} metalness={0.6} roughness={0.3} />
         </mesh>
-        <mesh position={[0, -0.46, -0.03]}>
+        <mesh position={[0, -MONITOR.height / 2 - 0.13, -0.03]}>
           <boxGeometry args={[0.3, 0.015, 0.18]} />
           <meshStandardMaterial color={theme.metal} metalness={0.6} roughness={0.3} />
         </mesh>
