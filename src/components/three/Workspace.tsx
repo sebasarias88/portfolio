@@ -6,6 +6,9 @@ import { CodeScreen } from "./CodeScreen";
 import type { SceneTheme } from "./sceneTheme";
 
 // 16:10 panel to match the editor canvas (1600×1000)
+/** Backrest tilt in radians (positive leans back, away from the desk). */
+const CHAIR_RECLINE = 0.16;
+
 export const MONITOR = { position: [0, 1.25, -0.5] as const, width: 1.1, height: 0.6875 };
 
 /** Desk, monitor, keyboard, chair and small personal props. */
@@ -90,11 +93,12 @@ export function Workspace({ theme }: { theme: SceneTheme }) {
         <RoundedBox args={[0.55, 0.08, 0.5]} radius={0.03} position={[0, 0.48, 0]}>
           <meshStandardMaterial color={theme.chair} roughness={0.6} />
         </RoundedBox>
-        <RoundedBox args={[0.52, 0.8, 0.08]} radius={0.04} position={[0, 0.9, 0.25]} rotation={[-0.12, 0, 0]}>
+        {/* Backrest reclined slightly backwards */}
+        <RoundedBox args={[0.52, 0.8, 0.08]} radius={0.04} position={[0, 0.9, 0.3]} rotation={[CHAIR_RECLINE, 0, 0]}>
           <meshStandardMaterial color={theme.chair} roughness={0.6} />
         </RoundedBox>
         {[-0.18, 0.18].map((x) => (
-          <mesh key={x} position={[x, 0.9, 0.205]} rotation={[-0.12, 0, 0]}>
+          <mesh key={x} position={[x, 0.9, 0.255]} rotation={[CHAIR_RECLINE, 0, 0]}>
             <boxGeometry args={[0.03, 0.7, 0.005]} />
             <meshStandardMaterial color="#b3202a" roughness={0.5} />
           </mesh>
